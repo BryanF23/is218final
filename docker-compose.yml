@@ -1,0 +1,29 @@
+version: '3.8'  # Specify Docker Compose file format version
+
+services:
+  web:
+    image: my-web-app:latest  # This could be an image you've built or pulled
+    ports:
+      - "5000:5000"  # Expose port 5000 of the container to port 5000 on the host
+    environment:
+      - ENV_VAR_NAME=value  # Set environment variables for your container
+    volumes:
+      - ./app:/app  # Mount the local directory './app' to the container's /app directory
+    networks:
+      - webnet  # Connect the container to a custom network
+
+  db:
+    image: postgres:latest  # Using an official Postgres image
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    volumes:
+      - db-data:/var/lib/postgresql/data  # Persist the database data
+    networks:
+      - webnet  # Share the same network as the web container
+
+networks:
+  webnet:  # Define the custom network
+
+volumes:
+  db-data:  # Define a volume to store database data
