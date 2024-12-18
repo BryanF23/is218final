@@ -1,3 +1,4 @@
+
 def addition(a: float, b: float) -> float:
     """This function takes two float numbers as arguments and returns their sum."""
     result = a + b
