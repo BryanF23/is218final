@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +6,8 @@
     <title>Calculator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #d4c4a8;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -15,94 +15,107 @@
             margin: 0;
         }
         .calculator {
-            background: #ffffff;
-            border: 1px solid #ddd;
+            background: #ebe2c9;
+            border: 2px solid #555;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            text-align: center;
         }
         .calculator h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #333;
+            margin-bottom: 15px;
+        }
+        .display {
+            background: #222;
+            color: #0f0;
+            font-family: 'Digital-7 Mono', monospace;
+            font-size: 1.5rem;
+            padding: 10px;
+            text-align: right;
+            border: 2px inset #444;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            height: 40px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
         }
         input {
-            width: 100%;
-            margin: 5px 0;
-            padding: 10px;
-            font-size: 1rem;
-            box-sizing: border-box;
+            display: none; /* Hidden as old calculators don’t show input boxes */
         }
         button {
-            width: 48%;
-            padding: 10px;
-            margin: 5px 1%;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
+            width: 65px;
+            height: 40px;
+            margin: 5px;
+            background-color: #dcdcdc;
+            border: 2px solid #666;
+            border-radius: 4px;
             font-size: 1rem;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 1.2rem;
             font-weight: bold;
             color: #333;
+            cursor: pointer;
+            box-shadow: 0 2px #aaa;
+        }
+        button:active {
+            box-shadow: none;
+            transform: translateY(2px);
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #333;
+            display: none; /* Hidden, as old calculators displayed the result on-screen */
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <h1>Calculator</h1>
+        <h1>Retro Calculator</h1>
+        <div class="display" id="result">0</div>
         <input type="number" id="num1" placeholder="Enter first number">
         <input type="number" id="num2" placeholder="Enter second number">
         <div>
-            <button onclick="sendCalculation('add')">Add</button>
-            <button onclick="sendCalculation('subtract')">Subtract</button>
-            <button onclick="sendCalculation('multiply')">Multiply</button>
-            <button onclick="sendCalculation('divide')">Divide</button>
+            <button onclick="sendCalculation('add')">+</button>
+            <button onclick="sendCalculation('subtract')">−</button>
+            <button onclick="sendCalculation('multiply')">×</button>
+            <button onclick="sendCalculation('divide')">÷</button>
         </div>
-        <div class="result" id="result">Result: </div>
     </div>
 
     <script>
         async function sendCalculation(operation) {
-            const num1 = parseFloat(document.getElementById("num1").value);
-            const num2 = parseFloat(document.getElementById("num2").value);
+            const num1 = parseFloat(prompt("Enter the first number:"));
+            const num2 = parseFloat(prompt("Enter the second number:"));
             const resultElement = document.getElementById("result");
 
             // Input validation
             if (isNaN(num1) || isNaN(num2)) {
-                resultElement.innerText = "Please enter valid numbers.";
-                resultElement.style.color = "red";
+                resultElement.innerText = "Error";
                 return;
             }
 
-            try {
-                // Send the request with query parameters
-                const response = await fetch(`/?operation=${operation}&num1=${num1}&num2=${num2}`, {
-                    method: "POST"
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    resultElement.innerText = `Result: ${data.result}`;
-                    resultElement.style.color = "#333";
-                } else {
-                    resultElement.innerText = data.error || "An error occurred.";
-                    resultElement.style.color = "red";
-                }
-            } catch (error) {
-                resultElement.innerText = "An error occurred. Please try again.";
-                resultElement.style.color = "red";
+            let result;
+            switch (operation) {
+                case 'add':
+                    result = num1 + num2;
+                    break;
+                case 'subtract':
+                    result = num1 - num2;
+                    break;
+                case 'multiply':
+                    result = num1 * num2;
+                    break;
+                case 'divide':
+                    result = num2 !== 0 ? num1 / num2 : "Error";
+                    break;
+                default:
+                    result = "Error";
             }
+
+            resultElement.innerText = result;
         }
     </script>
 </body>
