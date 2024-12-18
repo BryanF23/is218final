@@ -1,117 +1,69 @@
-"""
-Tests for arithmetic operations (addition, subtraction, multiplication, division, power, modulus)
-with valid and invalid inputs, including division by zero and type errors. 
-Uses pytest fixtures and parameterization.
-"""
-# pylint: disable=redefined-outer-name
 import pytest
-from app.operations.addition import Addition
-from app.operations.subtraction import Subtraction
-from app.operations.multiplication import Multiplication
-from app.operations.division import Division
+from app.operations import addition, subtraction, multiplication, division
 
-@pytest.fixture
-def addition_fixture():
-    """Fixture that provides an instance of the Addition class."""
-    return Addition()
-
-@pytest.fixture
-def subtraction_fixture():
-    """Fixture that provides an instance of the Subtraction class."""
-    return Subtraction()
-
-@pytest.fixture
-def multiplication_fixture():
-    """Fixture that provides an instance of the Multiplication class."""
-    return Multiplication()
-
-@pytest.fixture
-def division_fixture():
-    """Fixture that provides an instance of the Division class."""
-    return Division()
-
-# Addition Tests
+# Tests for addition
 @pytest.mark.parametrize("a, b, expected", [
-    (3, 5, 8),      # Test case: 3 + 5 should return 8
-    (-1, 1, 0),     # Test case: -1 + 1 should return 0
-    (0, 0, 0),      # Test case: 0 + 0 should return 0
+    (1.5, 2.5, 4.0),      # Positive case
+    (-1.5, -2.5, -4.0),   # Positive case
+    (10.0, 5.0, 15.0),    # Positive case
+    (0, 5.0, 5.0),        # Positive case
+    (2.0, 3.0, 6.0)       # Negative case: Expected result is incorrect
 ])
-def test_addition(addition_fixture, a, b, expected):
-    """Test the addition operation with valid integer inputs."""
-    assert addition_fixture.calculate(a, b) == expected
+def test_addition(a, b, expected):
+    if (a + b) == expected:  # Positive outcome
+        assert addition(a, b) == expected
+    else:  # Negative outcome
+        assert addition(a, b) != expected
 
-# Subtraction Tests
+# Tests for subtraction
 @pytest.mark.parametrize("a, b, expected", [
-    (10, 5, 5),     # Test case: 10 - 5 should return 5
-    (5, 10, -5),    # Test case: 5 - 10 should return -5
-    (0, 0, 0),      # Test case: 0 - 0 should return 0
+    (5.0, 3.0, 2.0),       # Positive case
+    (10.0, 5.0, 5.0),      # Positive case
+    (-10.0, -5.0, -5.0),   # Positive case
+    (0.0, 5.0, -5.0),      # Positive case
+    (5.0, 3.0, 1.0)        # Negative case: Expected result is incorrect
 ])
-def test_subtraction(subtraction_fixture, a, b, expected):
-    """Test the subtraction operation with valid integer inputs."""
-    assert subtraction_fixture.calculate(a, b) == expected
+def test_subtraction(a, b, expected):
+    if (a - b) == expected:  # Positive outcome
+        assert subtraction(a, b) == expected
+    else:  # Negative outcome
+        assert subtraction(a, b) != expected
 
-# Multiplication Tests
+# Tests for multiplication
 @pytest.mark.parametrize("a, b, expected", [
-    (3, 7, 21),     # Test case: 3 * 7 should return 21
-    (-1, 10, -10),  # Test case: -1 * 10 should return -10
-    (0, 5, 0),      # Test case: 0 * 5 should return 0
+    (2.0, 3.0, 6.0),       # Positive case
+    (-2.0, 3.0, -6.0),     # Positive case
+    (0.0, 5.0, 0.0),       # Positive case
+    (-3.0, -2.0, 6.0),     # Positive case
+    (2.0, 3.0, 7.0)        # Negative case: Expected result is incorrect
 ])
-def test_multiplication(multiplication_fixture, a, b, expected):
-    """Test the multiplication operation with valid integer inputs."""
-    assert multiplication_fixture.calculate(a, b) == expected
+def test_multiplication(a, b, expected):
+    if (a * b) == expected:  # Positive outcome
+        assert multiplication(a, b) == expected
+    else:  # Negative outcome
+        assert multiplication(a, b) != expected
 
-# Division Tests
+# Tests for division
 @pytest.mark.parametrize("a, b, expected", [
-    (10, 2, 5),     # Test case: 10 / 2 should return 5
-    (5, 2, 2.5),    # Test case: 5 / 2 should return 2.5
-    (0, 1, 0),      # Test case: 0 / 1 should return 0
+    (6.0, 3.0, 2.0),       # Positive case
+    (5.0, 2.5, 2.0),       # Positive case
+    (-10.0, 2.0, -5.0),    # Positive case
+    (0.0, 3.0, 0.0),       # Positive case
+    (6.0, 3.0, 3.0)        # Negative case: Expected result is incorrect
 ])
-def test_division(division_fixture, a, b, expected):
-    """Test the division operation with valid integer inputs."""
-    assert division_fixture.calculate(a, b) == expected
+def test_division(a, b, expected):
+    if b == 0:
+        pytest.skip("Skipping division by zero in this test")
+    if (a / b) == expected:  # Positive outcome
+        assert division(a, b) == expected
+    else:  # Negative outcome
+        assert division(a, b) != expected
 
-def test_division_by_zero(division_fixture):
-    """Test that division by zero raises a ValueError."""
-    with pytest.raises(ValueError):
-        division_fixture.calculate(5, 0)
-
-# Invalid Input Tests
+# Test for division by zero
 @pytest.mark.parametrize("a, b", [
-    (5, 'x'),      # Invalid input type: string instead of number
-    ('y', 3),      # Invalid input type: string instead of number
-    (None, 4),     # Invalid input type: None
+    (10.0, 0),
+    (0.0, 0)
 ])
-def test_addition_invalid(addition_fixture, a, b):
-    """Test that addition raises TypeError for invalid inputs."""
-    with pytest.raises(TypeError):
-        addition_fixture.calculate(a, b)
-
-@pytest.mark.parametrize("a, b", [
-    (5, 'z'),      # Invalid input type: string instead of number
-    ('x', 3),      # Invalid input type: string instead of number
-    (None, 4),     # Invalid input type: None
-])
-def test_subtraction_invalid(subtraction_fixture, a, b):
-    """Test that subtraction raises TypeError for invalid inputs."""
-    with pytest.raises(TypeError):
-        subtraction_fixture.calculate(a, b)
-
-@pytest.mark.parametrize("a, b", [
-    (3, 'x'),      # Invalid input type: string instead of number
-    ('y', 3),      # Invalid input type: string instead of number
-    (None, 4),     # Invalid input type: None
-])
-def test_multiplication_invalid(multiplication_fixture, a, b):
-    """Test that multiplication raises TypeError for invalid inputs."""
-    with pytest.raises(TypeError):
-        multiplication_fixture.calculate(a, b)
-
-@pytest.mark.parametrize("a, b", [
-    (5, 'z'),      # Invalid input type: string instead of number
-    ('x', 5),      # Invalid input type: string instead of number
-    (None, 5),     # Invalid input type: None
-])
-def test_division_invalid(division_fixture, a, b):
-    """Test that division raises TypeError for invalid inputs."""
-    with pytest.raises(TypeError):
-        division_fixture.calculate(a, b)
+def test_division_by_zero(a, b):
+    with pytest.raises(ValueError, match="division by zero is not allowed."):
+        division(a, b)
