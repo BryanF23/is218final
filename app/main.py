@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fa-stapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from app.operations import addition, subtraction, multiplication, division
